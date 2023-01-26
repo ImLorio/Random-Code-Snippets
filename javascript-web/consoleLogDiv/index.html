@@ -1,0 +1,63 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <title>Testing Console Output</title>
+    <style>
+        body {
+            background-color: #32353a;
+            color: #ffffff;
+        }
+
+        .consoleOutput {
+            background-color: #2c2f33;
+            border-radius: 5px;
+            padding: 10px;
+            font-size: 20px;
+            cursor: pointer;
+            display: flex;
+            flex-direction: column;
+        }
+
+        .consoleOutput .log { color: #ffffff; }
+        .consoleOutput .info { color: #00ffff; }
+        .consoleOutput .debug { color: #00ff00; }
+        .consoleOutput .warn { color: #f9a602; }
+        .consoleOutput .error { color: #ff0000; }
+    </style>
+</head>
+<body>
+    <h1>Console:</h1>
+    <div class="consoleOutput">
+        <code class="log">log: Hello World!</code>
+        <code class="info">info: Hello World!</code>
+        <code class="debug">debug: Hello World!</code>
+        <code class="warn">warn: Hello World!</code>
+        <code class="error">error: Hello World!</code>
+    </div>
+    <script>
+        var log = document.getElementsByClassName('consoleOutput')[0];
+
+        ['log', 'debug', 'info', 'warn', 'error'].forEach(function (verb) {
+            console[verb] = (function (method, verb, log) {
+                return function () {
+                    method.apply(console, arguments);
+                    for (const argument of arguments) {
+                        let msg = document.createElement('code');
+                        msg.classList.add(verb);
+                        msg.textContent = verb + ': ' + argument;
+                        log.appendChild(msg);
+                    }
+                };
+            })(console[verb], verb, log);
+        });
+
+        console['clear'] = (function (method, verb, log) {
+            return function () {
+                method.apply(console, arguments);
+                log.innerHTML = '';
+            };
+        })(console['clear'], 'clear', log);
+        clear = console.clear;
+    </script>
+</body>
+</html>
